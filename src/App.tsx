@@ -181,17 +181,18 @@ export default function App() {
 
       clearTimeout(timer);
 
+      const responseText = await response.text();
+
       if (!response.ok) {
         let errorMessage = `서버 오류 (${response.status})`;
         try {
-          const errData = await response.json();
+          const errData = JSON.parse(responseText);
           errorMessage = errData.error || errorMessage;
         } catch {
-          const rawText = await response.text();
-          if (rawText.toLowerCase().includes('gemini_api_key')) {
-            errorMessage = 'GEMINI_API_KEY 환경변수가 설정되지 않았습니다. Vercel 프로젝트 환경 변수에 GEMINI_API_KEY를 등록해 주세요.';
+          if (responseText.toLowerCase().includes('gemini_api_key')) {
+            errorMessage = 'GEMINI_API_KEY 환경변수가 설정되지 않았습니다. Vercel 프로젝트 [Settings] -> [Environment Variables]에 GEMINI_API_KEY를 등록해 주세요.';
           } else {
-            errorMessage = `서버에서 오류 응답을 반환했습니다 (${response.status}). Vercel 환경변수(GEMINI_API_KEY) 설정을 확인해 주세요.`;
+            errorMessage = `서버 오류 (${response.status}): Vercel 환경 변수 GEMINI_API_KEY 설정을 확인해 주세요.`;
           }
         }
         throw new Error(errorMessage);
@@ -199,9 +200,9 @@ export default function App() {
 
       let data: any;
       try {
-        data = await response.json();
+        data = JSON.parse(responseText);
       } catch {
-        throw new Error('서버 응답 형식이 올바르지 않습니다. (Vercel 환경 변수의 GEMINI_API_KEY 설정 여부를 확인해 주세요.)');
+        throw new Error('서버 응답 형식이 올바르지 않습니다. (Vercel 환경 변수 GEMINI_API_KEY 등록 여부를 확인해 주세요.)');
       }
 
       const assistantMessage: ChatMessage = {
