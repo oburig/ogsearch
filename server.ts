@@ -79,6 +79,12 @@ app.get('/api/health', (_req, res) => {
 // Document Fact Extraction API Route
 app.post('/api/ask', async (req, res) => {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({
+        error: 'Vercel 환경 변수에 GEMINI_API_KEY가 등록되어 있지 않습니다. Vercel 프로젝트 대시보드 [Settings] -> [Environment Variables]에서 GEMINI_API_KEY 키를 등록 후 재배포해 주세요.'
+      });
+    }
+
     const { question, documents, history, includeFacts, includeAdvice, answerMode } = req.body;
 
     if (!question || typeof question !== 'string') {

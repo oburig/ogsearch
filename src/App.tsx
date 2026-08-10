@@ -182,11 +182,27 @@ export default function App() {
       clearTimeout(timer);
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || '답변 생성에 실패했습니다.');
+        let errorMessage = `서버 오류 (${response.status})`;
+        try {
+          const errData = await response.json();
+          errorMessage = errData.error || errorMessage;
+        } catch {
+          const rawText = await response.text();
+          if (rawText.toLowerCase().includes('gemini_api_key')) {
+            errorMessage = 'GEMINI_API_KEY 환경변수가 설정되지 않았습니다. Vercel 프로젝트 환경 변수에 GEMINI_API_KEY를 등록해 주세요.';
+          } else {
+            errorMessage = `서버에서 오류 응답을 반환했습니다 (${response.status}). Vercel 환경변수(GEMINI_API_KEY) 설정을 확인해 주세요.`;
+          }
+        }
+        throw new Error(errorMessage);
       }
 
-      const data = await response.json();
+      let data: any;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error('서버 응답 형식이 올바르지 않습니다. (Vercel 환경 변수의 GEMINI_API_KEY 설정 여부를 확인해 주세요.)');
+      }
 
       const assistantMessage: ChatMessage = {
         id: 'msg-' + (Date.now() + 1),
