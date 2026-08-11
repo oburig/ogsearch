@@ -125,8 +125,9 @@ export default function App() {
       enabled: true,
       uploadedAt: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
       note: isBylaw
-        ? `지방자치단체 자치법규(law.go.kr) ${law.lawName} 원문`
-        : `국가법령정보센터(law.go.kr) ${law.lawName} 원문`
+        ? `지방자치단체 자치법규(law.go.kr) ${law.lawName} 원문 (제1조~부칙 및 별지서식 완비)`
+        : `국가법령정보센터(law.go.kr) ${law.lawName} 원문 (제1조~부칙 및 별지서식 완비)`,
+      forms: law.forms
     };
 
     setDocuments(prev => [lawDoc, ...prev]);

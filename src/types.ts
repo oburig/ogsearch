@@ -10,6 +10,7 @@ export interface DocumentFile {
   uploadedAt: string;
   pageCount?: number;
   note?: string;
+  forms?: { title: string; formType: string; description: string; downloadUrl?: string }[];
 }
 
 export interface ChatMessage {

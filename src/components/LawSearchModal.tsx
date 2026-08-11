@@ -224,7 +224,27 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
         { title: '제5조(수탁기관의 의무)', content: '관련 법령, 조례 준수 및 시설 목적에 맞는 성실 관리 의무.' },
         { title: '제6조(예산 및 보조금 지원)', content: '운영비, 종사자 인건비, 시설 유지보수 보조금 지원.' },
         { title: '제7조(정산 및 회계)', content: '회계연도 종료 2개월 이내 증빙 첨부 정산서 제출.' },
-        { title: '제8조(지도·점검)', content: '연 1회 이상 지자체장의 현장 지도·점검 실시.' }
+        { title: '제8조(지도·점검) & 부칙', content: '연 1회 이상 현장 지도·점검 실시 및 공포일 시행 부칙.' }
+      ],
+      forms: [
+        {
+          title: `[별지 제1호 서식] ${regionName} ${topicKeyword} 위탁 운영 신청서`,
+          formType: '별지서식',
+          description: `${regionName} 지방보조금 및 위탁 신청 시 제출하는 법정 기본 서식`,
+          downloadUrl: `https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=139&query=${encodeURIComponent(exactOrdinanceName)}`
+        },
+        {
+          title: `[별지 제2호 서식] ${regionName} ${topicKeyword} 실적보고서 및 정산서`,
+          formType: '별지서식',
+          description: '사업 종료 후 정산 검증을 위하여 첨부 제출하는 서식 양식',
+          downloadUrl: `https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=139&query=${encodeURIComponent(exactOrdinanceName)}`
+        },
+        {
+          title: `[별표 1] ${topicKeyword} 수탁기관 적격성 심사 배점표`,
+          formType: '별표',
+          description: '수탁기관 선정 심의위원회 위원이 사용하는 법정 적격 평가표',
+          downloadUrl: `https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=139&query=${encodeURIComponent(exactOrdinanceName)}`
+        }
       ]
     };
 
@@ -750,15 +770,15 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                       </button>
 
-                      {/* Expanded Articles View */}
+                      {/* Expanded Articles & Forms View */}
                       {isExpanded && (
-                        <div className="mb-3 p-2.5 bg-[#FAF8F3] border border-[#DFD9C9] rounded-lg text-[11px] text-[#3D473A] space-y-2 animate-in fade-in duration-150">
+                        <div className="mb-3 p-2.5 bg-[#FAF8F3] border border-[#DFD9C9] rounded-lg text-[11px] text-[#3D473A] space-y-2.5 animate-in fade-in duration-150">
                           <div className="font-bold text-[#5A6F54] border-b border-[#E8E4D9] pb-1 flex items-center justify-between">
-                            <span>📜 {law.lawName} 핵심 조항</span>
+                            <span>📜 {law.lawName} 조항 전문 (제1조 ~ 부칙)</span>
                             <span className="text-[10px] text-[#8A8F85] font-normal">law.go.kr 기준</span>
                           </div>
                           {law.articles && law.articles.length > 0 ? (
-                            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-[11px] leading-relaxed">
+                            <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-[11px] leading-relaxed">
                               {law.articles.map((art, idx) => (
                                 <div key={idx} className="bg-white p-1.5 rounded border border-[#E8E4D9]">
                                   <span className="font-bold text-[#5A6F54] block mb-0.5">{art.title}</span>
@@ -770,6 +790,34 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
                             <p className="text-[#8A8F85] text-[10px] leading-relaxed">
                               {law.description}
                             </p>
+                          )}
+
+                          {/* Attached Forms / Schedules List */}
+                          {law.forms && law.forms.length > 0 && (
+                            <div className="pt-2 border-t border-[#E8E4D9]">
+                              <div className="font-bold text-[#5A6F54] mb-1.5 flex items-center space-x-1">
+                                <span>📋 포함된 법정 별지서식 및 별표 ({law.forms.length}건)</span>
+                              </div>
+                              <div className="space-y-1">
+                                {law.forms.map((f, fIdx) => (
+                                  <div key={fIdx} className="bg-white p-1.5 rounded border border-[#E8E4D9] flex items-center justify-between text-[10px]">
+                                    <div className="min-w-0 pr-2">
+                                      <span className="font-bold text-[#3D473A] truncate block">{f.title}</span>
+                                      <span className="text-[#8A8F85] truncate block">{f.description}</span>
+                                    </div>
+                                    <a
+                                      href={f.downloadUrl || law.lawGoKrUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-[#5A6F54] bg-[#F5F2EA] hover:bg-[#E8E4D9] px-1.5 py-0.5 rounded font-bold shrink-0 cursor-pointer flex items-center space-x-0.5"
+                                    >
+                                      <span>서식 보기</span>
+                                      <ExternalLink className="w-2.5 h-2.5" />
+                                    </a>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                           )}
                         </div>
                       )}
