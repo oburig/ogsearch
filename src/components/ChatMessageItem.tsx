@@ -87,17 +87,11 @@ export const ChatMessageItem: React.FC<ChatMessageItemProps> = ({ message }) => 
 
           {/* Special Warning if NOT FOUND */}
           {parsed.isNotFound ? (
-            <div className="bg-[#FFFBEB] border-l-4 border-amber-600 p-3 rounded-r-xl space-y-1 text-amber-900 border border-[#FEF3C7]">
+            <div className="bg-[#FFFBEB] border-l-4 border-amber-600 p-3 rounded-r-xl text-amber-900 border border-[#FEF3C7]">
               <div className="flex items-center space-x-1.5 font-bold text-amber-900 text-xs">
                 <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                 <span>업로드 문서 내 미기재 (확인 불가)</span>
               </div>
-              <p className="text-xs font-medium text-amber-800 leading-tight">
-                &quot;업로드하신 문서에서는 해당 내용을 찾을 수 없습니다.&quot;
-              </p>
-              <p className="text-[11px] text-amber-800/80 leading-normal pt-1">
-                시스템 원칙에 따라, 업로드된 지침 및 규정 문서에 실제로 명시되지 않은 내용은 임의로 추측하거나 보완하여 답변하지 않습니다. (상세 실무 조언이 필요하시면 하단의 <strong className="text-amber-900">[💡 일반 상식 &amp; 실무 조언 포함]</strong> 모드를 체크해 주세요.)
-              </p>
             </div>
           ) : (
             /* Structured Fact Extraction View */

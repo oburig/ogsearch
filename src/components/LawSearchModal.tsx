@@ -36,6 +36,7 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
   const [selectedLawType, setSelectedLawType] = useState<string>('전체');
   const [expandedLawId, setExpandedLawId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showProcessBanner, setShowProcessBanner] = useState(false);
 
   if (!isOpen) return null;
 
@@ -421,7 +422,7 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
     };
 
     let dynamicItems: LawItem[] = [];
-    if (selectedLawType === '행정규칙' || /훈령|고시|지침|행정규칙/.test(raw)) {
+    if (selectedLawType === '행정규칙' || /훈령|고시|예규|지침|행정규칙/.test(raw)) {
       dynamicItems = [customAdminRule1, customAdminRule2, customNationalLaw, customNationalDecree, customNationalRule, bylaw1, bylaw2];
     } else if (isLocalRegionQuery) {
       dynamicItems = [bylaw1, bylaw2, bylaw3, customNationalLaw, customNationalDecree, customNationalRule, customAdminRule1, customAdminRule2];
@@ -515,25 +516,25 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-xs">
-      <div className="bg-[#FDFCF9] rounded-2xl border border-[#E8E4D9] shadow-2xl max-w-4xl w-full max-h-[92vh] sm:max-h-[88vh] h-full flex flex-col overflow-hidden animate-in fade-in duration-200">
+      <div className="bg-[#FDFCF9] rounded-2xl border border-[#E8E4D9] shadow-2xl max-w-4xl w-full h-[95vh] sm:h-auto sm:max-h-[88vh] flex flex-col overflow-hidden animate-in fade-in duration-200">
         
         {/* Modal Header */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-[#3D473A] text-white flex items-center justify-between border-b border-[#3D473A] shrink-0">
-          <div className="flex items-center space-x-2.5 sm:space-x-3 pr-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#5A6F54] flex items-center justify-center text-white shadow-xs shrink-0">
-              <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
+        <div className="px-3 sm:px-6 py-2.5 sm:py-4 bg-[#3D473A] text-white flex items-center justify-between border-b border-[#3D473A] shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 pr-2 min-w-0">
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-[#5A6F54] flex items-center justify-center text-white shadow-xs shrink-0">
+              <Scale className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center space-x-1.5 sm:space-x-2">
-                <h2 className="text-sm sm:text-lg font-bold leading-tight">
-                  국가법령, 행정규칙 및 지자체 자치법규 연동 (법·시행령·행정규칙·조례·규칙)
+                <h2 className="text-xs sm:text-lg font-bold leading-tight truncate sm:whitespace-normal">
+                  국가법령 및 지자체 자치법규 연동
                 </h2>
-                <span className="bg-[#5A6F54] text-white text-[10px] sm:text-[11px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full border border-white/20 shrink-0">
+                <span className="bg-[#5A6F54] text-white text-[9px] sm:text-[11px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full border border-white/20 shrink-0">
                   law.go.kr
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-[#EDE9DE] line-clamp-1 sm:line-clamp-none mt-0.5">
-                대한민국 법률, 시행령, 부령, <strong>행정규칙(훈령·고시·지침)</strong> 및 보령시 등 지자체 조례 원문을 불러옵니다.
+              <p className="text-[10px] sm:text-xs text-[#EDE9DE] truncate sm:whitespace-normal mt-0.5">
+                법률, 시행령, 부령, <strong>행정규칙(훈령·고시)</strong> 및 보령시 등 지자체 조례 원문
               </p>
             </div>
           </div>
@@ -546,12 +547,40 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
           </button>
         </div>
 
-        {/* National Law Info Center Query Integration Process Banner (Matching User's Diagram) */}
-        <div className="bg-[#FAF8F3] px-3 sm:px-6 py-2.5 border-b border-[#E8E4D9] shrink-0">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+        {/* National Law Info Center Query Integration Process Banner */}
+        <div className="bg-[#FAF8F3] px-3 sm:px-6 py-2 border-b border-[#E8E4D9] shrink-0">
+          <div className="flex items-center justify-between gap-2">
             
-            {/* 3-Step Process Flow Visual */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1 text-[11px] sm:text-xs">
+            {/* Process Toggle Button on Mobile / Info Badge */}
+            <button
+              type="button"
+              onClick={() => setShowProcessBanner(!showProcessBanner)}
+              className="text-[11px] sm:text-xs font-bold text-[#3D473A] flex items-center space-x-1.5 hover:text-[#5A6F54] transition cursor-pointer"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#5A6F54] animate-pulse shrink-0" />
+              <span className="truncate">국가법령 3단계 자동연동</span>
+              <span className="text-[10px] text-[#5A6F54] bg-white px-1.5 py-0.2 rounded border border-[#DFD9C9] font-medium shrink-0">
+                {showProcessBanner ? '접기 ▲' : '안내 보기 ▼'}
+              </span>
+            </button>
+
+            {/* Direct External Search Execution Button */}
+            <a
+              href={getActiveLawGoKrUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1 bg-[#5A6F54] hover:bg-[#4A5C45] text-white px-2.5 py-1 rounded-lg font-bold text-[10px] sm:text-xs transition cursor-pointer shadow-2xs shrink-0"
+              title="국가법령정보센터에서 주제어 파라미터 검색 직접 실행"
+            >
+              <span>법령 센터 직접 검색</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+
+          </div>
+
+          {/* 3-Step Process Flow Visual (Collapsible on mobile, visible on desktop) */}
+          <div className={`${showProcessBanner ? 'block' : 'hidden sm:block'} mt-2 pt-2 border-t sm:border-t-0 border-[#E8E4D9]`}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
               {/* Step 1 */}
               <div className="bg-white p-2 rounded-xl border border-[#E8E4D9] flex items-center space-x-2 shadow-2xs">
                 <span className="w-5 h-5 rounded-full bg-[#5A6F54] text-white font-bold text-[10px] flex items-center justify-center shrink-0">1</span>
@@ -587,45 +616,32 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
                 </div>
               </div>
             </div>
-
-            {/* Direct External Search Execution Button */}
-            <a
-              href={getActiveLawGoKrUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center space-x-1.5 bg-[#5A6F54] hover:bg-[#4A5C45] text-white px-3 py-2 rounded-xl font-bold text-xs transition cursor-pointer shadow-2xs shrink-0"
-              title="국가법령정보센터에서 주제어 파라미터 검색 직접 실행"
-            >
-              <span>국가법령정보센터 주제어 직접 검색</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-
           </div>
         </div>
 
         {/* Search & Hierarchy Selector Bar */}
-        <div className="p-3 sm:p-5 bg-[#F8F7F4] border-b border-[#E8E4D9] space-y-2.5 sm:space-y-3 shrink-0">
-          {/* Law Hierarchy Filter Tabs */}
+        <div className="p-2.5 sm:p-5 bg-[#F8F7F4] border-b border-[#E8E4D9] space-y-2 sm:space-y-3 shrink-0">
+          {/* Law Hierarchy Filter Tabs (Horizontal scroll on mobile to save vertical height) */}
           <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-[#E8E4D9] shadow-2xs">
-            <div className="text-[11px] sm:text-xs font-bold text-[#3D473A] mb-1 sm:mb-1.5 px-1 flex items-center space-x-1">
+            <div className="text-[10px] sm:text-xs font-bold text-[#3D473A] mb-1 sm:mb-1.5 px-0.5 flex items-center space-x-1">
               <Filter className="w-3.5 h-3.5 text-[#5A6F54]" />
-              <span>법령, 행정규칙 및 자치법규 단계 선택 (법 / 시행령 / 시행규칙 / 행정규칙 / 조례 / 규칙):</span>
+              <span>법령·조례 단계 선택 (좌우 스크롤):</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1 sm:gap-1.5">
+            <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none sm:grid sm:grid-cols-4 md:grid-cols-7 sm:space-x-0 sm:gap-1.5 flex-nowrap">
               {lawTypes.map((t) => {
                 const isSelected = selectedLawType === t.value;
                 return (
                   <button
                     key={t.value}
                     onClick={() => setSelectedLawType(t.value)}
-                    className={`px-2 py-1 sm:py-1.5 rounded-lg text-left transition cursor-pointer flex flex-col justify-between border ${
+                    className={`px-2 py-1 sm:py-1.5 rounded-lg text-left transition cursor-pointer flex flex-col justify-between border shrink-0 min-w-[85px] sm:min-w-0 ${
                       isSelected
                         ? 'bg-[#5A6F54] text-white border-[#5A6F54] shadow-2xs'
                         : 'bg-[#FDFCF9] text-[#3D473A] hover:bg-[#F5F2EA] border-[#E8E4D9]'
                     }`}
                   >
-                    <span className="text-[11px] sm:text-xs font-bold">{t.label}</span>
-                    <span className={`text-[9px] sm:text-[10px] mt-0.5 line-clamp-1 ${isSelected ? 'text-white/80' : 'text-[#8A8F85]'}`}>
+                    <span className="text-[10px] sm:text-xs font-bold truncate">{t.label}</span>
+                    <span className={`text-[8px] sm:text-[10px] mt-0.5 truncate ${isSelected ? 'text-white/80' : 'text-[#8A8F85]'}`}>
                       {t.desc}
                     </span>
                   </button>
@@ -641,16 +657,16 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="법령/지자체 조례 검색 (예: 보령시, 서울시, 보령시 장애인 조례, 근로기준법, 주차장...)"
-              className="w-full bg-white border border-[#E8E4D9] rounded-xl pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-xs sm:text-sm text-[#3D473A] placeholder-[#8A8F85] focus:outline-none focus:ring-2 focus:ring-[#5A6F54] focus:border-transparent shadow-2xs"
+              placeholder="법령/지자체 조례 검색 (예: 보령시, 서울시, 장애인, 근로기준법...)"
+              className="w-full bg-white border border-[#E8E4D9] rounded-xl pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2.5 text-xs sm:text-sm text-[#3D473A] placeholder-[#8A8F85] focus:outline-none focus:ring-2 focus:ring-[#5A6F54] focus:border-transparent shadow-2xs"
             />
           </div>
 
           {/* Quick Municipal Search Chips */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 scrollbar-none text-[11px]">
+          <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 scrollbar-none text-[10px] sm:text-[11px] flex-nowrap">
             <span className="text-[#8A8F85] font-semibold shrink-0 flex items-center space-x-1 mr-0.5">
               <Building className="w-3 h-3 text-[#5A6F54]" />
-              <span>추천 자치법규:</span>
+              <span>추천:</span>
             </span>
             <button
               onClick={() => { setSearchQuery('보령시'); setSelectedCategory('전체'); }}
@@ -685,12 +701,12 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-0.5 sm:flex-wrap sm:space-x-0 sm:gap-1.5 scrollbar-none">
+          <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 pt-0.5 sm:flex-wrap sm:space-x-0 sm:gap-1.5 scrollbar-none flex-nowrap">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium transition cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-medium transition cursor-pointer whitespace-nowrap shrink-0 ${
                   selectedCategory === cat
                     ? 'bg-[#3D473A] text-white font-semibold'
                     : 'bg-white text-[#3D473A] hover:bg-[#F5F2EA] border border-[#E8E4D9]'
@@ -711,7 +727,7 @@ export const LawSearchModal: React.FC<LawSearchModalProps> = ({
         )}
 
         {/* Laws List (Scrollable Area) */}
-        <div className="p-3 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-3 bg-[#FDFCF9] overscroll-contain">
+        <div className="p-2.5 sm:p-6 overflow-y-auto flex-1 min-h-[160px] space-y-3 bg-[#FDFCF9] overscroll-contain">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] sm:text-xs text-[#8A8F85] font-semibold px-1 gap-1">
             <span>
               검색된 법령 및 지자체 조례 목록 ({displayLaws.length}건)
