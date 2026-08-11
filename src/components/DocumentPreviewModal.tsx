@@ -55,16 +55,19 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
           {/* Text Content */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-bold text-[#3D473A]">
-              <span>발췌용 파싱 텍스트 미리보기</span>
+              <span className="flex items-center space-x-1.5">
+                <span>📜</span>
+                <span>법령/지침/문서 원문 전문 (Full Text)</span>
+              </span>
               {document.textContent && (
-                <span className="text-[#8A8F85] font-normal">
-                  (총 {document.textContent.length.toLocaleString()}자)
+                <span className="text-[#5A6F54] font-semibold bg-[#F5F2EA] px-2 py-0.5 rounded border border-[#DFD9C9] text-[11px]">
+                  총 {document.textContent.length.toLocaleString()}자 전체 수록
                 </span>
               )}
             </div>
 
             {document.textContent ? (
-              <pre className="bg-white p-4 rounded-xl border border-[#E8E4D9] text-xs sm:text-sm text-[#3D473A] font-mono whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto shadow-2xs">
+              <pre className="bg-white p-4 rounded-xl border border-[#E8E4D9] text-xs sm:text-sm text-[#3D473A] font-mono whitespace-pre-wrap leading-relaxed max-h-[480px] overflow-y-auto shadow-2xs border-l-4 border-l-[#5A6F54]">
                 {document.textContent}
               </pre>
             ) : document.dataBase64 ? (

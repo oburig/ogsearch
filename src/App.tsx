@@ -105,7 +105,9 @@ export default function App() {
   };
 
   const handleImportLaw = (law: LawItem) => {
-    const lawDocName = `[대한민국 법률] ${law.lawName}.txt`;
+    const isBylaw = law.lawType === '조례' || law.lawType === '규칙';
+    const prefix = isBylaw ? '[지자체 자치법규]' : '[대한민국 법률]';
+    const lawDocName = `${prefix} ${law.lawName}.txt`;
     
     // Check if already exists
     if (documents.some(d => d.name === lawDocName)) {
@@ -122,7 +124,9 @@ export default function App() {
       textContent: law.textContent,
       enabled: true,
       uploadedAt: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
-      note: `국가법령정보센터(law.go.kr) ${law.lawName} 원문`
+      note: isBylaw
+        ? `지방자치단체 자치법규(law.go.kr) ${law.lawName} 원문`
+        : `국가법령정보센터(law.go.kr) ${law.lawName} 원문`
     };
 
     setDocuments(prev => [lawDoc, ...prev]);
